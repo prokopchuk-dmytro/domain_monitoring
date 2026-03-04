@@ -10,11 +10,5 @@
             "src": "/(.*)",
             "dest": "/api/index.php"
         }
-    ],
-    "crons": [
-        {
-            "path": "/api/cron/domains-check",
-            "schedule": "* * * * *"
-        }
     ]
 }

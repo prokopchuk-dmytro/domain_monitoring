@@ -11,6 +11,7 @@ RUN apk add --no-cache \
     nodejs \
     npm \
     oniguruma-dev \
+    postgresql-dev \
     unzip \
     zip \
     && docker-php-ext-install \

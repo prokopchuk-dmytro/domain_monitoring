@@ -4,7 +4,8 @@ import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
 
-const enableWayfinder = process.env.VERCEL !== '1';
+const enableWayfinder =
+    process.env.VERCEL !== '1' && process.env.RENDER !== 'true';
 
 export default defineConfig({
     plugins: [

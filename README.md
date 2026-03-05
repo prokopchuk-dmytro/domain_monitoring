@@ -1,47 +1,48 @@
 ## Технології
+- Backend: Laravel 12, PHP 8.3 (Docker image)
+- Frontend: React 19, TypeScript, Inertia.js, Vite
+- UI: Tailwind CSS 4, Radix UI, Lucide
+- DB: MySQL 8.4 (Docker)
+- Веб-сервер: Nginx (Docker)
+- Планувальник: Laravel Scheduler (`schedule:work` у окремому контейнері)
 
-- **Backend:** PHP 8.5, Laravel 12
-- **Auth:** Laravel Fortify
-- **Frontend:** React 19, TypeScript, Inertia.js
-- **UI:** Tailwind CSS 4, Radix UI, Lucide Icons
-- **Build tools:** Vite
-- **Database:** SQLite
-- **HTTP моніторинг:** Laravel HTTP Client (`Http::send`)
-- **Scheduler:** Laravel Scheduler (`schedule:work` / `schedule:run`)
-- **Тести/якість:** PHPUnit, ESLint, TypeScript (`tsc`)
+## Запуск через Docker
 
-## Запуск проєкту (Laravel 12 + React)
-
-### 1. Клонування і встановлення
+### 1. Підготувати env
 ```bash
-git clone
+cp .env.docker.example .env
+```
 
-composer install
-npm install
-cp .env.example .env
-php artisan key:generate
+### 2. Підняти контейнери
+```bash
+docker compose up -d --build
+```
 
-База даних
-touch database/database.sqlite
-php artisan migrate --force
+### 3. Встановити залежності та згенерувати ключ
+```bash
+docker compose exec app composer install
+docker compose exec app php artisan key:generate
+```
 
-Запуск dev
-php artisan serve
-npm run dev
-php artisan schedule:work
+### 4. Накатити міграції
+```bash
+docker compose exec app php artisan migrate --force
+```
 
-Перевірка
-http://localhost:8000
-зареєструватись / увійти
-перейти в Dashboard
+### 5. Відкрити проєкт
+- App: http://localhost:8080
+- Vite HMR: http://localhost:5173
 
-Прод
-composer install --no-dev --optimize-autoloader
-npm ci && npm run build
-php artisan migrate --force
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+## Корисні команди
+```bash
+# Логи
+docker compose logs -f app
+docker compose logs -f web
+docker compose logs -f scheduler
 
-cron 1хв
-* * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1
+# Зупинити
+docker compose down
+
+# Зупинити + видалити volume БД
+docker compose down -v
+```

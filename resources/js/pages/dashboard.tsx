@@ -69,10 +69,19 @@ function statusBadge(status: DomainRow['last_status']) {
 }
 
 export default function Dashboard({ stats, latestChecks, domains, recentChecks, setupWarning }: DashboardProps) {
-    const { flash } = usePage().props as {
+    const { flash, auth } = usePage().props as {
         flash?: {
             success?: string;
             error?: string;
+        };
+        auth: {
+            user: {
+                email: string;
+                notification_email?: string | null;
+                telegram_chat_id?: string | null;
+                email_notifications_enabled?: boolean;
+                telegram_notifications_enabled?: boolean;
+            };
         };
     };
 
@@ -148,6 +157,71 @@ export default function Dashboard({ stats, latestChecks, domains, recentChecks, 
                         </CardContent>
                     </Card>
                 </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Сповіщення (Email / Telegram)</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Form action="/settings/notifications" method="post" className="grid gap-4 md:grid-cols-2">
+                            {({ processing, errors }) => (
+                                <>
+                                    <input type="hidden" name="_method" value="put" />
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="notification_email">Email для сповіщень</Label>
+                                        <Input
+                                            id="notification_email"
+                                            name="notification_email"
+                                            type="email"
+                                            defaultValue={auth.user.notification_email ?? auth.user.email}
+                                            placeholder="you@example.com"
+                                        />
+                                        {errors.notification_email && (
+                                            <p className="text-xs text-red-600">{errors.notification_email}</p>
+                                        )}
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="telegram_chat_id">Telegram Chat ID</Label>
+                                        <Input
+                                            id="telegram_chat_id"
+                                            name="telegram_chat_id"
+                                            defaultValue={auth.user.telegram_chat_id ?? ''}
+                                            placeholder="123456789"
+                                        />
+                                        {errors.telegram_chat_id && (
+                                            <p className="text-xs text-red-600">{errors.telegram_chat_id}</p>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            id="email_notifications_enabled"
+                                            name="email_notifications_enabled"
+                                            type="checkbox"
+                                            defaultChecked={auth.user.email_notifications_enabled ?? true}
+                                        />
+                                        <Label htmlFor="email_notifications_enabled">
+                                            Увімкнути Email-сповіщення
+                                        </Label>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            id="telegram_notifications_enabled"
+                                            name="telegram_notifications_enabled"
+                                            type="checkbox"
+                                            defaultChecked={auth.user.telegram_notifications_enabled ?? false}
+                                        />
+                                        <Label htmlFor="telegram_notifications_enabled">
+                                            Увімкнути Telegram-сповіщення
+                                        </Label>
+                                    </div>
+                                    <Button disabled={processing} className="md:col-span-2 md:w-fit">
+                                        Зберегти налаштування
+                                    </Button>
+                                </>
+                            )}
+                        </Form>
+                    </CardContent>
+                </Card>
 
                 <Card>
                     <CardHeader>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DomainCheckController;
 use App\Http\Controllers\DomainController;
+use App\Http\Controllers\NotificationSettingsController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -16,6 +17,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->only(['index', 'store', 'update', 'destroy']);
     Route::post('domains/{domain}/checks', [DomainCheckController::class, 'store'])
         ->name('domains.checks.store');
+    Route::put('settings/notifications', [NotificationSettingsController::class, 'update'])
+        ->name('settings.notifications.update');
 });
 
 require __DIR__.'/settings.php';

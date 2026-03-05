@@ -46,3 +46,8 @@ docker compose down
 # Зупинити + видалити volume БД
 docker compose down -v
 ```
+
+## Сповіщення
+- Email: налаштовується через `MAIL_*` змінні в `.env`
+- Telegram: додай `TELEGRAM_BOT_TOKEN` в `.env`
+- Chat ID і вмикання/вимикання Email/Telegram робиться в Dashboard у блоці "Сповіщення (Email / Telegram)"

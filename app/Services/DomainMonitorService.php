@@ -10,8 +10,14 @@ use Throwable;
 
 class DomainMonitorService
 {
+    public function __construct(
+        private readonly DomainAlertService $domainAlertService,
+    ) {
+    }
+
     public function check(Domain $domain): DomainCheck
     {
+        $previousStatus = $domain->last_status;
         $checkedAt = now();
         $targetUrl = $this->normalizeTarget($domain->domain);
         $method = strtolower($domain->check_method) === 'get' ? 'get' : 'head';
@@ -50,6 +56,16 @@ class DomainMonitorService
             'last_checked_at' => $checkedAt,
             'next_check_at' => $this->nextCheckAt($checkedAt, $domain->check_interval_minutes),
         ]);
+
+        $domain->loadMissing('user');
+
+        $this->domainAlertService->sendStatusChangedAlert(
+            domain: $domain,
+            previousStatus: $previousStatus,
+            currentStatus: $status,
+            responseCode: $responseCode,
+            error: $error,
+        );
 
         return $check;
     }

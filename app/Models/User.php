@@ -22,6 +22,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'notification_email',
+        'telegram_chat_id',
+        'email_notifications_enabled',
+        'telegram_notifications_enabled',
         'password',
     ];
 
@@ -48,6 +52,8 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'email_notifications_enabled' => 'boolean',
+            'telegram_notifications_enabled' => 'boolean',
         ];
     }
 
